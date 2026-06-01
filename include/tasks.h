@@ -3,8 +3,8 @@
 #define INCLUDE_TASKS_H_
 
 namespace Tasks {
-    double calculateRopeGap();
-    double calculatePoolCost();
-}
+double calculateRopeGap();
+double calculatePoolCost();
+} // namespace Tasks
 
 #endif // INCLUDE_TASKS_H_

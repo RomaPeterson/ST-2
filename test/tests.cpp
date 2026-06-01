@@ -8,7 +8,7 @@ const double EPSILON = 1e-5;
 const double PI = 3.14159265358979323846;
 
 class CircleTest : public ::testing::Test {
-protected:
+ protected:
     void SetUp() override {
     }
 };
@@ -139,7 +139,7 @@ TEST_F(CircleTest, CircleParametersRelationship) {
     double circ = c.getCircumference();
     double area = c.getArea();
     double radius = c.getRadius();
-    
+
     EXPECT_NEAR(circ, 2.0 * PI * radius, EPSILON);
     EXPECT_NEAR(area, PI * radius * radius, EPSILON);
     EXPECT_NEAR(circ * circ, 4.0 * PI * area, EPSILON);
@@ -148,10 +148,10 @@ TEST_F(CircleTest, CircleParametersRelationship) {
 TEST_F(CircleTest, CycleSetRadiusToAreaToCircumferenceBack) {
     Circle c(6.0);
     double initialRadius = c.getRadius();
-    
+
     c.setArea(c.getArea());
     EXPECT_NEAR(initialRadius, c.getRadius(), EPSILON);
-    
+
     c.setCircumference(c.getCircumference());
     EXPECT_NEAR(initialRadius, c.getRadius(), EPSILON);
 }
@@ -194,7 +194,7 @@ TEST(PoolCostTest, BreakdownCalculation) {
     double expectedFenceCost = 2.0 * PI * 4.0 * 2000.0;
     double expectedWalkwayCost = 7.0 * PI * 1000.0;
     double expectedTotal = expectedFenceCost + expectedWalkwayCost;
-    
+
     EXPECT_NEAR(expectedTotal, cost, 0.1);
 }
 
@@ -207,10 +207,10 @@ TEST(PoolCostTest, Deterministic) {
 TEST(IntegrationTest, CircleWithTaskRope) {
     Circle earthCircle(6378100.0);
     double originalCirc = earthCircle.getCircumference();
-    
+
     Circle newCircle(0.0);
     newCircle.setCircumference(originalCirc + 1.0);
-    
+
     double gap = newCircle.getRadius() - 6378100.0;
     EXPECT_NEAR(0.159155, gap, 0.001);
 }
@@ -218,14 +218,9 @@ TEST(IntegrationTest, CircleWithTaskRope) {
 TEST(IntegrationTest, CircleWithTaskPool) {
     Circle pool(3.0);
     Circle poolWithTrack(4.0);
-    
+
     double walkwayArea = poolWithTrack.getArea() - pool.getArea();
     double expectedArea = 7.0 * PI;
-    
-    EXPECT_NEAR(expectedArea, walkwayArea, EPSILON);
-}
 
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    EXPECT_NEAR(expectedArea, walkwayArea, EPSILON);
 }

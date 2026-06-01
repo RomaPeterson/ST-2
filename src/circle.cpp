@@ -1,38 +1,64 @@
-// Copyright 2022 UNN-CS
-#include <cstdint>
-#include <cmath>
+// Copyright 2025 UNN-CS
 #include "circle.h"
+#include <cmath>
+#include <stdexcept>
 
-Circle::Circle(double rad) {
-    setRadius(rad);
+const double PI = 3.14159265358979323846;
+
+Circle::Circle(double initialRadius) : rad(initialRadius) {
+    if (rad < 0) {
+        throw std::invalid_argument("Radius cannot be negative");
+    }
+    updateFromRadius();
 }
 
-void Circle::setRadius(double rad) {
-    radius = rad;
-    ference = 2 * M_PI * rad;
-    area = M_PI * radius * radius;
+void Circle::updateFromRadius() {
+    circ = 2.0 * PI * rad;
+    sq = PI * rad * rad;
 }
 
-void Circle::setFerence(double fer) {
-    ference = fer;
-    radius = ference/(M_PI*2);
-    area = (ference*ference)/(4*M_PI);
+void Circle::updateFromCircumference() {
+    rad = circ / (2.0 * PI);
+    sq = (circ * circ) / (4.0 * PI);
 }
 
-void Circle::setArea(double ar) {
-    area = ar;
-    radius = std::sqrt(area/M_PI);
-    ference = 2 * M_PI * radius;
+void Circle::updateFromArea() {
+    rad = std::sqrt(sq / PI);
+    circ = 2.0 * PI * rad;
 }
 
-double Circle::getArea() const {
-    return area;
+void Circle::setRadius(double r) {
+    if (r < 0) {
+        throw std::invalid_argument("Radius cannot be negative");
+    }
+    rad = r;
+    updateFromRadius();
+}
+
+void Circle::setCircumference(double c) {
+    if (c < 0) {
+        throw std::invalid_argument("Circumference cannot be negative");
+    }
+    circ = c;
+    updateFromCircumference();
+}
+
+void Circle::setArea(double a) {
+    if (a < 0) {
+        throw std::invalid_argument("Area cannot be negative");
+    }
+    sq = a;
+    updateFromArea();
 }
 
 double Circle::getRadius() const {
-    return radius;
+    return rad;
 }
 
-double Circle::getFerence() const {
-    return ference;
+double Circle::getCircumference() const {
+    return circ;
+}
+
+double Circle::getArea() const {
+    return sq;
 }

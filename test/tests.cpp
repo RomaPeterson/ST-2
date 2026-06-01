@@ -1,109 +1,231 @@
-// Copyright 2025 UNN-CS Team
-
+// Copyright 2025 UNN-CS
 #include <gtest/gtest.h>
-#include <cstdint>
+#include <cmath>
 #include "circle.h"
 #include "tasks.h"
 
-TEST(CircleTest, RadiusSet) {
+const double EPSILON = 1e-5;
+const double PI = 3.14159265358979323846;
+
+class CircleTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+    }
+};
+
+TEST_F(CircleTest, ConstructorInitializesRadius) {
+    Circle c(5.0);
+    ASSERT_NEAR(5.0, c.getRadius(), EPSILON);
+}
+
+TEST_F(CircleTest, ConstructorCalculatesCircumference) {
     Circle c(3.0);
-    EXPECT_NEAR(3.0, c.getRadius(), 0.0001);
+    double expected = 2.0 * PI * 3.0;
+    ASSERT_NEAR(expected, c.getCircumference(), EPSILON);
 }
 
-TEST(CircleTest, FerenceFromRadius) {
-    Circle c(7.5);
-    EXPECT_NEAR(47.1239, c.getFerence(), 0.001);
+TEST_F(CircleTest, ConstructorCalculatesArea) {
+    Circle c(4.0);
+    double expected = PI * 16.0;
+    ASSERT_NEAR(expected, c.getArea(), EPSILON);
 }
 
-TEST(CircleTest, AreaFromRadius) {
-    Circle c(7.5);
-    EXPECT_NEAR(176.7146, c.getArea(), 0.001);
-}
-
-TEST(CircleTest, SetFerenceUpdatesRadius) {
-    Circle c(1.0);
-    c.setFerence(47.1239);
-    EXPECT_NEAR(7.5, c.getRadius(), 0.001);
-}
-
-TEST(CircleTest, SetFerenceUpdatesArea) {
-    Circle c(1.0);
-    c.setFerence(47.1239);
-    EXPECT_NEAR(176.7146, c.getArea(), 0.001);
-}
-
-TEST(CircleTest, SetAreaUpdatesRadius) {
-    Circle c(1.0);
-    c.setArea(176.7146);
-    EXPECT_NEAR(7.5, c.getRadius(), 0.001);
-}
-
-TEST(CircleTest, SetAreaUpdatesFerence) {
-    Circle c(1.0);
-    c.setArea(176.7146);
-    EXPECT_NEAR(47.1239, c.getFerence(), 0.001);
-}
-
-TEST(CircleTest, ZeroRadiusTest) {
+TEST_F(CircleTest, ZeroRadiusConstruction) {
     Circle c(0.0);
+    EXPECT_DOUBLE_EQ(0.0, c.getRadius());
+    EXPECT_DOUBLE_EQ(0.0, c.getCircumference());
     EXPECT_DOUBLE_EQ(0.0, c.getArea());
-    EXPECT_DOUBLE_EQ(0.0, c.getFerence());
 }
 
-TEST(CircleTest, SmallRadiusTest) {
-    Circle c(0.05);
-    EXPECT_NEAR(0.00785, c.getArea(), 0.0001);
+TEST_F(CircleTest, LargeRadiusConstruction) {
+    Circle c(1000000.0);
+    EXPECT_DOUBLE_EQ(1000000.0, c.getRadius());
 }
 
-TEST(CircleTest, LargeRadiusTest) {
-    Circle c(1e6);
-    EXPECT_GT(c.getArea(), 1e12);
+TEST_F(CircleTest, SetRadiusUpdatesValue) {
+    Circle c(1.0);
+    c.setRadius(7.0);
+    EXPECT_NEAR(7.0, c.getRadius(), EPSILON);
 }
 
-TEST(CircleTest, ConsistencyTest) {
-    Circle c(20.0);
-    double a1 = c.getArea();
-    c.setArea(a1);
-    EXPECT_NEAR(20.0, c.getRadius(), 0.0001);
+TEST_F(CircleTest, SetRadiusRecalculatesCircumference) {
+    Circle c(1.0);
+    c.setRadius(5.0);
+    double expected = 2.0 * PI * 5.0;
+    EXPECT_NEAR(expected, c.getCircumference(), EPSILON);
 }
 
-TEST(CircleTest, NegativeRadiusTest) {
-    Circle c(-1.0);
-    EXPECT_LE(c.getRadius(), 0.0);
+TEST_F(CircleTest, SetRadiusRecalculatesArea) {
+    Circle c(1.0);
+    c.setRadius(6.0);
+    double expected = PI * 36.0;
+    EXPECT_NEAR(expected, c.getArea(), EPSILON);
 }
 
-
-TEST(RopeTask, ResultIsPositive) {
-    EXPECT_GT(Rope(), 0.0);
+TEST_F(CircleTest, SetRadiusToZero) {
+    Circle c(10.0);
+    c.setRadius(0.0);
+    EXPECT_NEAR(0.0, c.getRadius(), EPSILON);
+    EXPECT_NEAR(0.0, c.getCircumference(), EPSILON);
+    EXPECT_NEAR(0.0, c.getArea(), EPSILON);
 }
 
-TEST(RopeTask, SpecificValueTest) {
-    EXPECT_NEAR(0.159, Rope(), 0.001);
+TEST_F(CircleTest, SetCircumferenceUpdatesRadius) {
+    Circle c(1.0);
+    double circumference = 2.0 * PI * 8.0;
+    c.setCircumference(circumference);
+    EXPECT_NEAR(8.0, c.getRadius(), EPSILON);
 }
 
-TEST(RopeTask, NotZeroTest) {
-    EXPECT_NE(0.0, Rope());
+TEST_F(CircleTest, SetCircumferenceUpdatesArea) {
+    Circle c(1.0);
+    double circumference = 2.0 * PI * 3.0;
+    c.setCircumference(circumference);
+    double expected = PI * 9.0;
+    EXPECT_NEAR(expected, c.getArea(), EPSILON);
 }
 
-TEST(RopeTask, LogicIndependence) {
-    EXPECT_LT(Rope(), 1.0);
+TEST_F(CircleTest, SetCircumferenceZero) {
+    Circle c(5.0);
+    c.setCircumference(0.0);
+    EXPECT_NEAR(0.0, c.getRadius(), EPSILON);
+    EXPECT_NEAR(0.0, c.getCircumference(), EPSILON);
 }
 
-
-TEST(PoolTask, CostIsPositive) {
-    EXPECT_GT(Pool(), 0.0);
+TEST_F(CircleTest, SetSmallCircumference) {
+    Circle c(10.0);
+    double circumference = 2.0 * PI * 0.5;
+    c.setCircumference(circumference);
+    EXPECT_NEAR(0.5, c.getRadius(), EPSILON);
 }
 
-TEST(PoolTask, ExpectedValueTest) {
-    EXPECT_NEAR(72256.6, Pool(), 1.0);
+TEST_F(CircleTest, SetAreaUpdatesRadius) {
+    Circle c(1.0);
+    c.setArea(PI * 25.0);
+    EXPECT_NEAR(5.0, c.getRadius(), EPSILON);
 }
 
-TEST(PoolTask, MinimumCostTest) {
-    EXPECT_GE(Pool(), 70000.0);
+TEST_F(CircleTest, SetAreaUpdatesCircumference) {
+    Circle c(1.0);
+    c.setArea(PI * 49.0);
+    double expected = 2.0 * PI * 7.0;
+    EXPECT_NEAR(expected, c.getCircumference(), EPSILON);
 }
 
-TEST(PoolTask, PrecisionTest) {
-    double res1 = Pool();
-    double res2 = Pool();
-    EXPECT_DOUBLE_EQ(res1, res2);
+TEST_F(CircleTest, SetAreaZero) {
+    Circle c(10.0);
+    c.setArea(0.0);
+    EXPECT_NEAR(0.0, c.getRadius(), EPSILON);
+    EXPECT_NEAR(0.0, c.getArea(), EPSILON);
+}
+
+TEST_F(CircleTest, SetSmallArea) {
+    Circle c(100.0);
+    c.setArea(PI * 0.01);
+    EXPECT_NEAR(0.1, c.getRadius(), EPSILON);
+}
+
+TEST_F(CircleTest, MultipleRadiusChanges) {
+    Circle c(2.0);
+    c.setRadius(4.0);
+    c.setRadius(8.0);
+    EXPECT_NEAR(8.0, c.getRadius(), EPSILON);
+    EXPECT_NEAR(2.0 * PI * 8.0, c.getCircumference(), EPSILON);
+    EXPECT_NEAR(PI * 64.0, c.getArea(), EPSILON);
+}
+
+TEST_F(CircleTest, CircleParametersRelationship) {
+    Circle c(10.0);
+    double circ = c.getCircumference();
+    double area = c.getArea();
+    double radius = c.getRadius();
+    
+    EXPECT_NEAR(circ, 2.0 * PI * radius, EPSILON);
+    EXPECT_NEAR(area, PI * radius * radius, EPSILON);
+    EXPECT_NEAR(circ * circ, 4.0 * PI * area, EPSILON);
+}
+
+TEST_F(CircleTest, CycleSetRadiusToAreaToCircumferenceBack) {
+    Circle c(6.0);
+    double initialRadius = c.getRadius();
+    
+    c.setArea(c.getArea());
+    EXPECT_NEAR(initialRadius, c.getRadius(), EPSILON);
+    
+    c.setCircumference(c.getCircumference());
+    EXPECT_NEAR(initialRadius, c.getRadius(), EPSILON);
+}
+
+TEST(RopeGapTest, ResultIsPositive) {
+    double gap = Tasks::calculateRopeGap();
+    EXPECT_GT(gap, 0.0);
+}
+
+TEST(RopeGapTest, ResultApproximatelyCorrect) {
+    double gap = Tasks::calculateRopeGap();
+    EXPECT_NEAR(0.159155, gap, 0.001);
+}
+
+TEST(RopeGapTest, ResultIndependentOfEarthSize) {
+    double gap = Tasks::calculateRopeGap();
+    EXPECT_LT(gap, 1.0);
+    EXPECT_GT(gap, 0.15);
+}
+
+TEST(RopeGapTest, Deterministic) {
+    double gap1 = Tasks::calculateRopeGap();
+    double gap2 = Tasks::calculateRopeGap();
+    EXPECT_DOUBLE_EQ(gap1, gap2);
+}
+
+TEST(PoolCostTest, ResultIsPositive) {
+    double cost = Tasks::calculatePoolCost();
+    EXPECT_GT(cost, 0.0);
+}
+
+TEST(PoolCostTest, ResultInReasonableRange) {
+    double cost = Tasks::calculatePoolCost();
+    EXPECT_GT(cost, 50000.0);
+    EXPECT_LT(cost, 100000.0);
+}
+
+TEST(PoolCostTest, BreakdownCalculation) {
+    double cost = Tasks::calculatePoolCost();
+    double expectedFenceCost = 2.0 * PI * 4.0 * 2000.0;
+    double expectedWalkwayCost = 7.0 * PI * 1000.0;
+    double expectedTotal = expectedFenceCost + expectedWalkwayCost;
+    
+    EXPECT_NEAR(expectedTotal, cost, 0.1);
+}
+
+TEST(PoolCostTest, Deterministic) {
+    double cost1 = Tasks::calculatePoolCost();
+    double cost2 = Tasks::calculatePoolCost();
+    EXPECT_DOUBLE_EQ(cost1, cost2);
+}
+
+TEST(IntegrationTest, CircleWithTaskRope) {
+    Circle earthCircle(6378100.0);
+    double originalCirc = earthCircle.getCircumference();
+    
+    Circle newCircle(0.0);
+    newCircle.setCircumference(originalCirc + 1.0);
+    
+    double gap = newCircle.getRadius() - 6378100.0;
+    EXPECT_NEAR(0.159155, gap, 0.001);
+}
+
+TEST(IntegrationTest, CircleWithTaskPool) {
+    Circle pool(3.0);
+    Circle poolWithTrack(4.0);
+    
+    double walkwayArea = poolWithTrack.getArea() - pool.getArea();
+    double expectedArea = 7.0 * PI;
+    
+    EXPECT_NEAR(expectedArea, walkwayArea, EPSILON);
+}
+
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

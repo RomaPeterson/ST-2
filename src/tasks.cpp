@@ -1,24 +1,43 @@
-// Copyright 2022 UNN-CS
+// Copyright 2025 UNN-CS
 #include "tasks.h"
-#include <cmath>
 #include "circle.h"
+#include <cmath>
 
-double Rope() {
-    double earth_radius = 6378100.0;
-    Circle rope(earth_radius);
-    double nFerence = rope.getFerence() + 1.0;
-    rope.setFerence(nFerence);
-    return rope.getRadius() - earth_radius;
+namespace Tasks {
+
+double calculateRopeGap() {
+    const double EARTH_RADIUS_M = 6378100.0;
+    
+    Circle earthCircle(EARTH_RADIUS_M);
+    double originalCircumference = earthCircle.getCircumference();
+    
+    double newCircumference = originalCircumference + 1.0;
+    
+    Circle newCircle(0.0);
+    newCircle.setCircumference(newCircumference);
+    
+    double gap = newCircle.getRadius() - EARTH_RADIUS_M;
+    
+    return gap;
 }
 
-double Pool() {
-    double pool_radius = 3.0;
-    double track_radius = 1.0;
-
-    Circle pool(pool_radius);
-    Circle road(pool_radius + track_radius);
-
-    double priceOgrada = road.getFerence() * 2000.0;
-    double priceDoroga = (road.getArea() - pool.getArea()) * 1000.0;
-    return priceOgrada + priceDoroga;
+double calculatePoolCost() {
+    const double POOL_RADIUS = 3.0;
+    const double WALKWAY_WIDTH = 1.0;
+    const double CONCRETE_PRICE = 1000.0;
+    const double FENCE_PRICE = 2000.0;
+    
+    Circle poolCircle(POOL_RADIUS);
+    Circle outerCircle(POOL_RADIUS + WALKWAY_WIDTH);
+    
+    double fenceCost = outerCircle.getCircumference() * FENCE_PRICE;
+    
+    double walkwayArea = outerCircle.getArea() - poolCircle.getArea();
+    double concreteСost = walkwayArea * CONCRETE_PRICE;
+    
+    double totalCost = fenceCost + concreteСost;
+    
+    return totalCost;
 }
+
+} // namespace Tasks

@@ -3,23 +3,23 @@
 #define INCLUDE_CIRCLE_H_
 
 class Circle {
-private:
+ private:
     double rad;
     double circ;
     double sq;
-    
+
     void recalculateAll();
     void updateFromRadius();
     void updateFromCircumference();
     void updateFromArea();
 
-public:
-    Circle(double initialRadius);
-    
+ public:
+    explicit Circle(double initialRadius);
+
     void setRadius(double r);
     void setCircumference(double c);
     void setArea(double a);
-    
+
     double getRadius() const;
     double getCircumference() const;
     double getArea() const;
